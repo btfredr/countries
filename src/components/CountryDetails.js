@@ -1,20 +1,50 @@
 import React from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useParams, useNavigate } from "react-router-dom";
 
-const CountryDetails = ({ darkMode }) => {
+const CountryDetails = ({ darkMode, countries }) => {
+  const params = useParams();
+  const navigate = useNavigate();
+
+  let name;
+  let flagImg;
+  let nativeName;
+  let population;
+  let region;
+  let subregion;
+  let capital;
+  let topLevelDomain;
+  let currencies = [];
+  let languages = [];
+  let borders = [];
+
+  countries.forEach((country) => {
+    if (country.alpha3Code === params.countryCode) {
+      name = country.name;
+      flagImg = country.flag;
+      nativeName = country.nativeName;
+      population = country.population;
+      region = country.region;
+      subregion = country.subregion;
+      capital = country.capital;
+      topLevelDomain = country.topLevelDomain;
+    }
+  });
+
+  const goBack = () => {
+    navigate("/");
+  };
+
   return (
     <div className="country_details">
-      <button className={`back ${darkMode ? "darkMode" : ""}`}>
+      <button className={`back ${darkMode ? "darkMode" : ""}`} onClick={goBack}>
         <ArrowBackIcon />
         <p>Go Back</p>
       </button>
 
       <div className="country_details_body">
         <div className="img_container">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg"
-            alt=""
-          />
+          <img src={flagImg} alt="" />
         </div>
 
         <div className="info">
@@ -24,25 +54,25 @@ const CountryDetails = ({ darkMode }) => {
               <p>
                 Native Name:{" "}
                 <span className={`values ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {nativeName}
                 </span>
               </p>
               <p>
                 Population:{" "}
                 <span className={`values ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {population}
                 </span>
               </p>
               <p>
                 Region:{" "}
                 <span className={`values ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {region}
                 </span>
               </p>
               <p>
                 Sub region:{" "}
                 <span className={`values ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {subregion}
                 </span>
               </p>
             </div>
@@ -50,13 +80,13 @@ const CountryDetails = ({ darkMode }) => {
               <p>
                 Capital:{" "}
                 <span className={`values ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {capital}
                 </span>
               </p>
               <p>
                 Top-level Domain:{" "}
                 <span className={`values ${darkMode ? "darkMode" : ""}`}>
-                  Test
+                  {topLevelDomain}
                 </span>
               </p>
               <p>
