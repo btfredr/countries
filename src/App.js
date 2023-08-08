@@ -4,13 +4,29 @@ import SearchIcon from "@mui/icons-material/Search";
 import Country from "./components/Country";
 import { Routes, Route } from "react-router-dom";
 import CountryDetails from "./components/CountryDetails";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
+  const [countries, setCountries] = useState([]);
 
   const switchMode = () => {
     setDarkMode((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    try {
+      fetchCountries();
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  const fetchCountries = async () => {
+    const response = await fetch("https://restcountries.com/v2/all");
+    const data = await response.json();
+
+    setCountries(data);
   };
 
   return (
@@ -40,7 +56,20 @@ function App() {
               </div>
 
               <div className="countries">
-                <Country darkMode={darkMode} />
+                {countries.map((country) => {
+                  return (
+                    <Country
+                      darkMode={darkMode}
+                      key={country.alpha3Code}
+                      code={country.alpha3Code}
+                      name={country.name}
+                      capital={country.capital}
+                      population={country.population}
+                      region={country.region}
+                      flag={country.flag}
+                    />
+                  );
+                })}
               </div>
             </div>
           }
