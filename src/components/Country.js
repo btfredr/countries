@@ -4,7 +4,10 @@ const Country = () => {
   return (
     <div className="country">
       <div className="flag_container">
-        <img src="" alt="" />
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Norway.svg"
+          alt=""
+        />
       </div>
 
       <div className="details">

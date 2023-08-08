@@ -119,3 +119,12 @@
 .country .values {
   color: grey;
 }
+
+.country .details {
+  padding: 15px;
+}
+
+.country .details p {
+  margin-bottom: 5px;
+}
+
