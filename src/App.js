@@ -4,11 +4,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import Country from "./components/Country";
 import { Routes, Route } from "react-router-dom";
 import CountryDetails from "./components/CountryDetails";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [countries, setCountries] = useState([]);
+  const regionRef = useRef();
+  const countriesInputRef = useRef();
+
+  const noCountries = countries.status || countries.message;
 
   const switchMode = () => {
     setDarkMode((prevState) => !prevState);
@@ -20,13 +24,34 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  });
+  }, []);
 
   const fetchCountries = async () => {
     const response = await fetch("https://restcountries.com/v2/all");
     const data = await response.json();
 
     setCountries(data);
+  };
+
+  const searchCountries = () => {
+    const searchValue = countriesInputRef.current.value;
+
+    if (searchValue.trim()) {
+      const fetchSearch = async () => {
+        const response = await fetch(
+          `https://restcountries.com/v2/name/${searchValue}`
+        );
+        const data = await response.json();
+        setCountries(data);
+      };
+      try {
+        fetchSearch();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      fetchCountries();
+    }
   };
 
   return (
@@ -41,10 +66,15 @@ function App() {
               <div className="inputs">
                 <div className={`search_input ${darkMode ? "darkMode" : ""}`}>
                   <SearchIcon />
-                  <input type="text" placeholder="Search for a country" />
+                  <input
+                    type="text"
+                    placeholder="Search for a country"
+                    ref={countriesInputRef}
+                    onChange={searchCountries}
+                  />
                 </div>
                 <div className={`select_region ${darkMode ? "darkMode" : ""}`}>
-                  <select>
+                  <select ref={regionRef}>
                     <option>All</option>
                     <option>Africa</option>
                     <option>Americas</option>
@@ -56,8 +86,8 @@ function App() {
               </div>
 
               <div className="countries">
-                {countries.map((country) => {
-                  return (
+                {!noCountries ? (
+                  countries.map((country) => (
                     <Country
                       darkMode={darkMode}
                       key={country.alpha3Code}
@@ -68,8 +98,10 @@ function App() {
                       region={country.region}
                       flag={country.flag}
                     />
-                  );
-                })}
+                  ))
+                ) : (
+                  <p>No countries found...</p>
+                )}
               </div>
             </div>
           }
